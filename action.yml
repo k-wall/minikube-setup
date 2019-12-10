@@ -1,7 +1,7 @@
 name: 'Minikube setup with registry'
-description: 'Installs minikube in your Github Actions workflow.'
+description: 'Installs minikube in  Github Actions.'
 branding:
-  icon: 'download-cloud'
+  icon: 'cloud'
   color: 'blue'
 inputs:
   minikube-version:
