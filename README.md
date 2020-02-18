@@ -1,16 +1,21 @@
 # Minikube setup action
 
 Action installs minikube to hosted VM environment.
+Minikube is installed and configured to run on Docker with self hosted registry.
+
+## Registries
+
+Custom registry runs on port 5000.
 
 ## Inputs
 
 ### `minikube-version`
 
-**Required** Minikube version. Default `"1.4.0"`.
+Minikube version. Default `"1.4.0"`.
 
 ### `k8s-version`
 
-**Required** Version of Kubernetes you wish to use with Minikube. Default `"1.14.6"`.
+Version of Kubernetes you wish to use with Minikube. Default `"1.14.6"`.
 
 ## Example usage
 ```

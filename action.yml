@@ -1,5 +1,6 @@
 name: 'Minikube setup with registry'
-description: 'Installs minikube in  Github Actions.'
+author: Enmasse Project
+description: 'Installs minikube in Github Actions with custom registry.'
 branding:
   icon: 'cloud'
   color: 'blue'
