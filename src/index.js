@@ -38,12 +38,12 @@ function install_minikube() {
     const minikubeVersion = core.getInput('minikube-version');
     core.info(`Downloading Minikube...`);
     var kubeDownCommand = 'curl';
-    var kubeDownArgs = ['-LO', `https://storage.googleapis.com/minikube/releases/latest/minikube_${minikubeVersion}.deb`];
+    var kubeDownArgs = ['-LO', `https://storage.googleapis.com/minikube/releases/latest/minikube_${minikubeVersion}-0_amd64.deb`];
     if (execute_command(kubeDownCommand, kubeDownArgs) == 1) return 1;
 
     core.info(`Installing Minikube...`);
     var kubeInstallCommand = 'sudo';
-    var kubeInstallArgs = ['dpkg', '-i', `minikube_${minikubeVersion}.deb`];
+    var kubeInstallArgs = ['dpkg', '-i', `minikube_${minikubeVersion}-0_amd64.deb`];
     return execute_command(kubeInstallCommand, kubeInstallArgs);
 }
 
