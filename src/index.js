@@ -34,6 +34,12 @@ function wait_for_minikube() {
     core.setFailed("Minikube failed to start or RBAC could not be properly set up");
 }
 
+function install_deps() {
+    var startCommand = 'sudo';
+    var startArgs = ['-E', 'apt-get', 'install', 'conntrack'];
+    return execute_command(startCommand, startArgs);
+}
+
 function install_minikube() {
     const minikubeVersion = core.getInput('minikube-version');
     core.info(`Downloading Minikube...`);
@@ -68,7 +74,7 @@ function start_minikube() {
 }
 
 try {
-    if (install_minikube() || run_registry() || start_minikube() || wait_for_minikube()) {
+    if (install_deps() || install_minikube() || run_registry() || start_minikube() || wait_for_minikube()) {
         core.setFailed(error.message);    
     }
     
