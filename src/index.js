@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const { spawnSync } = require('child_process');
+const DISTRO = process.env.PORT || 'DEBIAN';
 
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -32,6 +33,19 @@ function wait_for_minikube() {
         }
     }
     core.setFailed("Minikube failed to start or RBAC could not be properly set up");
+}
+
+function install_minikube_rh() {
+    const minikubeVersion = process.env.minikubeVersion
+    core.info(`Downloading Minikube...`);
+    var kubeDownCommand = 'curl';
+    var kubeDownArgs = ['-LO', `https://github.com/kubernetes/minikube/releases/download/v1.4.0/minikube-${minikubeVersion}.rpm`];
+    if (execute_command(kubeDownCommand, kubeDownArgs) == 1) return 1;
+
+    core.info(`Installing Minikube...`);
+    var kubeInstallCommand = 'sudo';
+    var kubeInstallArgs = ['yum', 'install', '-y', `minikube-${minikubeVersion}.rpm`];
+    return execute_command(kubeInstallCommand, kubeInstallArgs);
 }
 
 function install_minikube() {
@@ -67,10 +81,29 @@ function start_minikube() {
     return execute_command(addonsCommand, addonsArgs);
 }
 
+function start_minikube_rh() {
+    const kubernetesVersion = '1.18.0';
+    var startCommand = 'sudo';
+    var startArgs = ['-E', 'minikube', 'start', '--vm-driver=none', '--kubernetes-version',
+    `v${kubernetesVersion}`, '--insecure-registry=localhost:5000', '--extra-config=kubeadm.ignore-preflight-errors=SystemVerification', '--extra-config=apiserver.authorization-mode=RBAC']
+    if(execute_command(startCommand, startArgs) == 1) return 1;
+    
+    var addonsCommand = 'sudo';
+    var addonsArgs = ['-E', 'minikube', 'addons', 'enable', 'default-storageclass'];
+    return execute_command(addonsCommand, addonsArgs);
+}
+
 try {
-    if (install_minikube() || run_registry() || start_minikube() || wait_for_minikube()) {
-        core.setFailed(error.message);    
+    if (process.env.DISTRO == 'DEBIAN') {
+        if (install_minikube() || run_registry() || start_minikube() || wait_for_minikube()) {
+            core.setFailed(error.message);    
+        }
+    } else {
+        if (install_minikube_rh() || run_registry() || start_minikube_rh() || wait_for_minikube()) {
+            core.setFailed(error.message);    
+        }
     }
+    
     
 } catch (error) {
     core.setFailed(error.message);
