@@ -55,8 +55,8 @@ function install_minikube() {
 
 function run_registry() {
     core.info(`Running registry...`);
-    var registryCommand = 'docker';
-    var registryArgs = ['run', '-d', '-p', '5000:5000', 'registry'];
+    var registryCommand = 'minikube';
+    var registryArgs = ['addons', 'enable', 'registry'];
     return execute_command(registryCommand, registryArgs);
 }
 
@@ -65,7 +65,7 @@ function start_minikube() {
     core.exportVariable('CHANGE_MINIKUBE_NONE_USER', 'true');
     var startCommand = 'sudo';
     var startArgs = ['-E', 'minikube', 'start', '--vm-driver=none', '--kubernetes-version',
-    `v${kubernetesVersion}`, '--insecure-registry=localhost:5000', '--extra-config=kubeadm.ignore-preflight-errors=SystemVerification', '--extra-config=apiserver.authorization-mode=RBAC']
+    `v${kubernetesVersion}`, '--insecure-registry "10.0.0.0/24"', '--extra-config=kubeadm.ignore-preflight-errors=SystemVerification', '--extra-config=apiserver.authorization-mode=RBAC']
     if(execute_command(startCommand, startArgs) == 1) return 1;
     
     var addonsCommand = 'sudo';
@@ -74,7 +74,7 @@ function start_minikube() {
 }
 
 try {
-    if (install_deps() || install_minikube() || run_registry() || start_minikube() || wait_for_minikube()) {
+    if (install_deps() || install_minikube() || start_minikube() || run_registry() || wait_for_minikube()) {
         core.setFailed(error.message);    
     }
     
