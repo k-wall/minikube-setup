@@ -55,8 +55,8 @@ function install_minikube() {
 
 function run_registry() {
     core.info(`Running registry...`);
-    var registryCommand = 'minikube';
-    var registryArgs = ['addons', 'enable', 'registry'];
+    var registryCommand = 'docker';
+    var registryArgs = ['run', '--name', 'image-registry', '-d', '-p', '5000:5000', 'registry'];
     return execute_command(registryCommand, registryArgs);
 }
 
@@ -74,7 +74,7 @@ function start_minikube() {
 }
 
 try {
-    if (install_deps() || install_minikube() || start_minikube() || run_registry() || wait_for_minikube()) {
+    if (install_deps() || install_minikube() || run_registry() || start_minikube() || wait_for_minikube()) {
         core.setFailed(error.message);    
     }
     
