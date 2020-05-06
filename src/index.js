@@ -50,7 +50,7 @@ function install_minikube() {
 function run_registry() {
     core.info(`Running registry...`);
     var registryCommand = 'docker';
-    var registryArgs = ['run', '-d', '-p', '5000:5000', 'registry'];
+    var registryArgs = ['run', '--name', 'image-registry', '-d', '-p', '5000:5000', 'registry'];
     return execute_command(registryCommand, registryArgs);
 }
 
