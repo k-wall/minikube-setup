@@ -7,12 +7,15 @@ const sleep = (milliseconds) => {
   
 
 function execute_command(command, args) {
+    core.info(`Run ${command} ${args}`);
     var result = spawnSync(command, args);
     if(result.status == 0) {
-        core.info(`${result.stdout.toString()}`);
+        core.info(`Ok out: ${result.stdout.toString()} err: ${result.stderr.toString()}`);
         return 0;
     } else {
+        core.error(`${command} failed`);
         core.error(`${result.stderr.toString()}`);
+        core.error(`${result.stdiout.toString()}`);
         return 1;
     }
 }
@@ -50,8 +53,31 @@ function install_minikube() {
 function run_registry() {
     core.info(`Running registry...`);
     var registryCommand = 'docker';
-    var registryArgs = ['run', '-d', '-p', '5000:5000', 'registry'];
+    var registryArgs = ['run', '--name', 'image-registry', '-d', '-p', '5000:5000', '--restart=always', 'registry'];
     return execute_command(registryCommand, registryArgs);
+}
+
+function run_docker_ps() {
+/*
+    core.info(`Running docker ps...`);
+    var registryCommand = 'docker';
+    var registryArgs = ['ps', '--all'];
+    return execute_command(registryCommand, registryArgs);
+*/
+   return 0;
+}
+
+function run_logs() {
+/*
+    sleep(5).then(() => {
+        core.info(`Running docker image-registry logs...`);
+        var registryCommand = 'docker';
+        var registryArgs = ['logs', 'image-registry'];
+        execute_command(registryCommand, registryArgs);
+        core.info(`Run docker logs...`);
+   });
+*/
+   return 0;
 }
 
 function start_minikube() {
@@ -68,10 +94,12 @@ function start_minikube() {
 }
 
 try {
-    if (install_minikube() || run_registry() || start_minikube() || wait_for_minikube()) {
+    if (install_minikube() || run_registry() || start_minikube() || wait_for_minikube() || run_docker_ps() || run_logs()) {
+        core.info(`pipeline failed`);
         core.setFailed(error.message);    
     }
     
 } catch (error) {
+    core.info(`pipeline failed` + error);
     core.setFailed(error.message);
 }
