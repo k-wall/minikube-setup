@@ -68,9 +68,19 @@ function start_minikube() {
     `v${kubernetesVersion}`, '--extra-config=kubeadm.ignore-preflight-errors=SystemVerification', '--extra-config=apiserver.authorization-mode=RBAC']
     if(execute_command(startCommand, startArgs) == 1) return 1;
     
-    var addonsCommand = 'sudo';
-    var addonsArgs = ['-E', 'minikube', 'addons', 'enable', 'default-storageclass'];
-    return execute_command(addonsCommand, addonsArgs);
+    var addons = ['default-storageclass', 'ingress'];
+    for (var i in addons) {
+        var addon = addons[i];
+        var addonsCommand = 'sudo';
+        var addonsArgs = ['-E', 'minikube', 'addons', 'enable', addon];
+        if (execute_command(addonsCommand, addonsArgs) == 1) return 1;
+    }
+
+
+    // Enable SSL passthrough support
+    kubectl patch deployment ingress-nginx-controller -n ingress-nginx --type=json -p '[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--enable-ssl-passthrough"}]'
+
+    return 0;
 }
 
 try {
