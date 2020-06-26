@@ -78,9 +78,9 @@ function start_minikube() {
 
 
     // Enable SSL passthrough support
-    kubectl patch deployment ingress-nginx-controller -n ingress-nginx --type=json -p '[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--enable-ssl-passthrough"}]'
-
-    return 0;
+    var ingressCommand = 'kubectl';
+    var ingressArgs = ['patch', 'deployment', 'ingress-nginx-controller', '-n', 'ingress-nginx', '--type=json', '-p', '\'[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--enable-ssl-passthrough"}]\''];
+    return execute_command(ingressCommand, ingressArgs);
 }
 
 try {
