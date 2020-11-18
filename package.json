@@ -8,16 +8,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CodingNagger/minikube-setup-action.git"
+    "url": "git+https://github.com/EnMasseProject/minikube-setup.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/CodingNagger/minikube-setup-action/issues"
+    "url": "https://github.com/EnMasseProject/minikube-setup/issues"
   },
-  "homepage": "https://github.com/CodingNagger/minikube-setup-action#readme",
+  "homepage": "https://github.com/EnMasseProject/minikube-setup#readme",
   "dependencies": {
-    "@actions/core": "^1.2.0"
+    "@actions/core": "^1.2.6"
   }
 }
