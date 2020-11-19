@@ -62,8 +62,9 @@ function run_registry() {
 
 function start_minikube() {
     const kubernetesVersion = core.getInput('k8s-version');
-    var startCommand = 'CHANGE_MINIKUBE_NONE_USER=true';
-    var startArgs = ['sudo', '-E', 'minikube', 'start', '--vm-driver=none', '--kubernetes-version',
+    core.exportVariable('CHANGE_MINIKUBE_NONE_USER', true);
+    var startCommand = 'sudo';
+    var startArgs = ['-E', 'minikube', 'start', '--vm-driver=none', '--kubernetes-version',
     `v${kubernetesVersion}`, '--extra-config=kubeadm.ignore-preflight-errors=SystemVerification', '--extra-config=apiserver.authorization-mode=RBAC,Node']
     if(execute_command(startCommand, startArgs) == 1) return 1;
     
