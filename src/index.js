@@ -9,10 +9,10 @@ const sleep = (milliseconds) => {
 function execute_command(command, args) {
     var result = spawnSync(command, args);
     if(result.status == 0) {
-        core.info(`${result.stdout.toString()}`);
+        core.info(`${String(result.stdout)}`);
         return 0;
     } else {
-        core.error(`${result.stderr.toString()}`);
+        core.error(`${String(result.stderr)}`);
         return 1;
     }
 }
@@ -66,6 +66,7 @@ function start_minikube() {
     var startCommand = 'sudo';
     var startArgs = ['-E', 'minikube', 'start', '--vm-driver=none', '--kubernetes-version',
     `v${kubernetesVersion}`, '--extra-config=kubeadm.ignore-preflight-errors=SystemVerification', '--extra-config=apiserver.authorization-mode=RBAC,Node']
+
     if(execute_command(startCommand, startArgs) == 1) return 1;
     
     var addons = ['default-storageclass', 'ingress'];
@@ -79,7 +80,7 @@ function start_minikube() {
 
     // Enable SSL passthrough support
     var ingressCommand = 'kubectl';
-    var ingressArgs = ['patch', 'deployment', 'ingress-nginx-controller', '-n', 'ingress-nginx', '--type=json', '-p', '\'[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--enable-ssl-passthrough"}]\''];
+    var ingressArgs = ['patch', 'deployment', 'ingress-nginx-controller', '-n', 'kube-system', '--type=json', '-p', '\'[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--enable-ssl-passthrough"}]\''];
     return execute_command(ingressCommand, ingressArgs);
 }
 
