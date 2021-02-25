@@ -6,11 +6,11 @@ Action installs minikube to hosted VM environment.
 
 ### `minikube-version`
 
-**Required** Minikube version. Default `"1.4.0"`.
+**Required** Minikube version. Default `"1.17.1"`.
 
 ### `k8s-version`
 
-**Required** Version of Kubernetes you wish to use with Minikube. Default `"1.14.6"`.
+**Required** Version of Kubernetes you wish to use with Minikube. Default `"1.20.2"`.
 
 ## Example usage
 ```
